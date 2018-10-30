@@ -10,9 +10,11 @@ df_p_info = datahandler.get_dataframe(URL_P_INFO)
 df_soceco = datahandler.get_dataframe(URL_SOCECO)
 
 df_p_info['antal_pladser'] = df_p_info['antal_pladser'].apply(int)
+df_soceco['HUSTANDE'] = df_soceco['HUSTANDE'].apply(int)
 
 df_soceco = df_soceco[(df_soceco.AAR == '2014') & (df_soceco.DISTRIKTSNAVN != 'Uden for inddeling')]
 df_soceco['DISTRIKTSNAVN'] = df_soceco['DISTRIKTSNAVN'].apply(helpers, normalize_area)
+
 
 if __name__ == '__main__':
 
