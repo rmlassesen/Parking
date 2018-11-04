@@ -11,6 +11,11 @@ def income_map(self):
     :return: HTML page as string, showing Choropleth map
     '''
 
+    try:
+        self.pspa
+    except:
+        self.analyze()
+
     m = folium.Map(location=[55.67, 12.54], zoom_start=12)
     mapframe = helpers._income_to_int(self.income_dist_dict)
 
