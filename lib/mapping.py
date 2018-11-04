@@ -1,6 +1,5 @@
 from lib import helpers
-import pandas as pd
-import folium
+import folium, webbrowser
 
 # Chloromap, showing the average income pr. area in Copenhagen
 
@@ -32,6 +31,8 @@ def income_map(self):
 
     # return m.get_root().render()
 
-    return mapframe
+    webbrowser.open('map.html')
+
+    return "HTML Map Created"
 
 # Add markers for electric cars and private parking to the map
