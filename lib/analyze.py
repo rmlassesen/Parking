@@ -1,15 +1,14 @@
 import pandas as pd
 
 # Number of parking spaces in an area.
-def number_of_p_spaces(df, area):
-    data = df[df.bydel == area]
-    gb = data.groupby(['antal_pladser', 'vejnavn']).sort_values()
+def number_of_p_spaces(self, area = "Indre By"):
+    data = self.df_pni[self.df_pni.bydel == area]
+    total = data['antal_pladser'].sum()
+    p_spaces_per_road = data.groupby(['vejnavn'])['antal_pladser'].sum().sort_values()
 
-    return data, gb
+    road_with_most = p_spaces_per_road.keys()[-1]
 
-# Number of parking spaces per road name
-def p_spaces_per_road(df):
-    pass
+    return str(total) + " spaces in Indre by - " + road_with_most + " has the most spaces"
 
 # Number of parking spaces by odd and even house numbers
 def p_spaces_odd_even(df):
@@ -20,24 +19,21 @@ def p_spaces_odd_even(df):
 
 
 # Number of parking spaces for electric vehicles and number of private parkingspaces
-def featured_spaces(df):
-    spaces_by_type = df.groupby(['bydel', 'p_ordning'])['antal_pladser'].sum()
-    spaces_by_status = df.groupby(['bydel', 'vejstatus'])['antal_pladser'].sum()
-
+def featured_spaces(self):
     electric_spaces_per_area = {}
     private_spaces_per_area = {}
 
-    for area in areas:
-        electric_spaces_per_area[area] = spaces_by_type[area]['El-Bil plads']
-        private_spaces_per_area[area] = spaces_by_status[area]['Privat fællesvej']
+    for area in self.areas:
+        electric_spaces_per_area[area] = self.spaces_by_type[area]['El-Bil plads']
+        private_spaces_per_area[area] = self.spaces_by_status[area]['Privat fællesvej']
 
-        if 'Privat fællesvej §2 stk1' in spaces_by_status[area]:
-            private_spaces_per_area[area] += spaces_by_status[area]['Privat fællesvej §2 stk1']
+        if 'Privat fællesvej §2 stk1' in self.spaces_by_status[area]:
+            private_spaces_per_area[area] += self.spaces_by_status[area]['Privat fællesvej §2 stk1']
 
-        if 'Privat fællessti' in spaces_by_status[area]:
-            private_spaces_per_area[area] += spaces_by_status[area]['Privat fællessti']
+        if 'Privat fællessti' in self.spaces_by_status[area]:
+            private_spaces_per_area[area] += self.spaces_by_status[area]['Privat fællessti']
 
-    return electric_spaces_per_area, private_spaces_per_area
+    self.espa, self.pspa = electric_spaces_per_area, private_spaces_per_area
 
 
 
@@ -46,31 +42,19 @@ def marked_p_spaces(ds):
     pass
 
 # Most common family constellations per area
-def fam_const(df, areas):
-    constellations = df.groupby(['DISTRIKTSNAVN', 'FAMILIEGRUPPE'])['HUSTAND'].sum()
+def fam_const(self):
+    for area in self.areas:
+        self.area_const_dict[area] = self.constellations[area].sort_values(ascending=False).keys()[0]
 
-    area_const_dict = {}
-    for area in areas:
-        area_const_dict[area] = constellations[area].sort_values(ascending=False).keys()[0]
-
-    return area_const_dict
 
 # Best parking opportunities for family constellations
-def best_parking(df_p, df_s):
-    area_const_dict = fam_const(df_s)
-    spaces_by_area = df_p.groupby(['bydel'])['antal_pladser'].sum()
+def best_parking(self):
+    spaces_by_area = self.df_pni.groupby(['bydel'])['antal_pladser'].sum()
     spaces_by_area = spaces_by_area.sort_values(ascending=False)
 
-    const_with_best_parking = area_const_dict[spaces_by_area.keys()[0]]
-    
-    return const_with_best_parking
+    self.const_with_best_parking = self.area_const_dict[spaces_by_area.keys()[0]]
 
 
-def income_by_area(df, areas):
-    incomes = df.groupby(['DISTRIKTSNAVN','INDKOMSTKATEGORI'])['HUSSTANDE'].sum()
-
-    income_dist_dict = {}
-    for area in areas:
-        income_dist_dict[area] = incomes[area].mean()
-
-    return income_dist_dict
+def income_by_area(self):
+    for area in self.areas:
+        self.income_dist_dict[area] = self.incomes[area].sort_values().keys()[-1]
