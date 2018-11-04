@@ -11,11 +11,25 @@ def number_of_p_spaces(self, area = "Indre By"):
     return str(total) + " spaces in Indre by - " + road_with_most + " has the most spaces"
 
 # Number of parking spaces by odd and even house numbers
-def p_spaces_odd_even(df):
-    most_Lige = df[df.vejside == 'Lige husnr.']
-    most_ulige = df[df.vejside == 'Ulige husnr.']
+def p_spaces_odd_even(self):
+    even = self.df_pni[self.df_pni.vejside == 'Lige husnr.']
+    odd = self.df_pni[self.df_pni.vejside == 'Ulige husnr.']
 
-    return 'Lige husnr {}'.format(len(most_Lige)) , 'Ulige husnr {}'.format(len(most_ulige))
+    most_even = even['antal_pladser'].sum()
+    most_odd = odd['antal_pladser'].sum()
+
+    marked_odd = odd[odd.p_type == "Afmærket parkering"]['antal_pladser'].sum()
+    marked_even = even[even.p_type == "Afmærket parkering"]['antal_pladser'].sum()
+
+    most_marked = "even"
+
+    if marked_odd > marked_even:
+        most_marked = "odd"
+
+    odd_even = 'Even house numbers has {} spaces \n Odd house numbers has {} spaces'.format(most_even, most_odd)
+    marked = "\n The most marked spaces are on the {} side of the road".format(most_marked)
+
+    return  odd_even + marked
 
 
 # Number of parking spaces for electric vehicles and number of private parkingspaces
