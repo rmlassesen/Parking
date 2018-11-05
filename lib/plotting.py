@@ -4,7 +4,7 @@ import matplotlib.patches as mpatches
 
 
 # Bar-stack plot showing the distribution between public and private parking spaces per area
-def public_private_distro(df):
+def public_private_distro(self):
     pass
 
 # Plot of the amount of private and electric parking spaces per average income

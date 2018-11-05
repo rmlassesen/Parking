@@ -68,6 +68,8 @@ def best_parking(self):
 
     self.const_with_best_parking = self.area_const_dict[spaces_by_area.keys()[0]]
 
+    return self.const_with_best_parking
+
 
 def income_by_area(self):
     for area in self.areas:
